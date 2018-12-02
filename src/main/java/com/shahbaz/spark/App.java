@@ -1,9 +1,8 @@
 package com.shahbaz.spark;
 
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SparkSession;
-import org.apache.spark.sql.functions;
+import org.apache.spark.sql.*;
+
+import java.util.Properties;
 
 import static org.apache.spark.sql.functions.concat;
 import static org.apache.spark.sql.functions.lit;
@@ -38,6 +37,20 @@ public class App {
         //order by
         dataframe = dataframe.orderBy(dataframe.col("last_name").asc());
         dataframe.show();
+
+        //save in database
+        String dbConnectionUrl = "jdbc:h2:file:~/testDB";
+        Properties properties = new Properties();
+        properties.setProperty("driver","org.h2.Driver");
+        properties.setProperty("user","sa");
+        properties.setProperty("password","");
+
+        dataframe.write()
+                .mode(SaveMode.Overwrite)
+                .jdbc(dbConnectionUrl,"testDB", properties);
+
+
+
 
 
     }
